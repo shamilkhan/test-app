@@ -1,0 +1,17 @@
+.time-data {
+    &__loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    &__icon {
+        font-size: 40px;
+    }
+    &__logout {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
