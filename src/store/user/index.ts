@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-type State = typeof initialState;
-
 const initialState = Object.freeze({
   token: null as string | null,
 });
