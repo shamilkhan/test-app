@@ -45,16 +45,18 @@ const TimeData = () => {
 
   const connect = () => {
     if (!wsUrl) return;
+    if(socket) {
+      socket.close();
+    }
     socket = new WebSocket(wsUrl);
     socket.onopen = (e) => {
       setIsConnected(true);
       socket.onmessage = (e: MessageEvent) => {
-        console.log(e);
         setServerDate(JSON.parse(e.data)["server_time"]);
       };
       socket.onclose = () => {
         setWsUrl("");
-        setServerDate(0);
+        // setServerDate(0);
         setIsConnected(false)
       };
     };

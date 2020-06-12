@@ -6,12 +6,21 @@
         transform: translate(-50%, -50%);
     }
     &__icon {
-        font-size: 40px;
+        font-size: 30px;
     }
     &__logout {
         position: absolute;
         bottom: 15px;
         left: 50%;
         transform: translateX(-50%);
+    }
+    &__value {
+        margin-top: 23px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    &__timestamp {
+        font-size: 20px;
     }
 }

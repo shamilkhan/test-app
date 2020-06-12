@@ -40,7 +40,7 @@ const Login = () => {
           onLogin({ token });
         }
       })
-      .catch((err) => console.error(err))
+      // .catch((err) => console.error(err))
       .finally(() => setisLoginProcess(false));
   };
 
