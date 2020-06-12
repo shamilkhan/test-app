@@ -23,13 +23,18 @@ const Login = () => {
     setisLoginProcess(true);
     fetch(`${process.env.REACT_APP_API_SERVICE}login`, {
       method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({ username, password }),
     })
       .then((res) => {
-        let token = null;
-        //@ts-ignore
-        for (var pair of res.headers.entries()) {
-          token = pair[1];
+        let token;
+        for (const [key, value] of res.headers.entries()) {
+          if (key === "x-test-app-jwt-token") {
+            token = value;
+          }
         }
         if (token) {
           onLogin({ token });

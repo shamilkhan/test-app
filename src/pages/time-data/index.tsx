@@ -1,18 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Button } from "antd";
-import { logout } from "../../store/user";
 import useToken from "../../custom-hooks/use-token";
 import LoadingComponent from "../../shared/loading-component";
+import Logout from "./logout";
+import TimeComponent from "./time-component";
 
 import "./index.scss";
 
 const TimeData = () => {
-  const dispatch = useDispatch();
   const token = useToken();
 
   const [wsUrl, setWsUrl] = useState("");
-  const [serverDate, setServerDate] = useState(null);
+  const [serverDate, setServerDate] = useState<number>(0);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -22,10 +20,6 @@ const TimeData = () => {
   useEffect(() => {
     connect();
   }, [wsUrl]);
-
-  const onLogout = useCallback(() => {
-    dispatch(logout());
-  }, []);
 
   const getConnectionUrl = useCallback(() => {
     fetch(`${process.env.REACT_APP_API_SERVICE}subscribe`, {
@@ -57,25 +51,13 @@ const TimeData = () => {
 
   return (
     <div className="time-data">
-      {serverDate && (
-        <div className="time-data__value">
-          <div className="time-data__icon">🕔</div>
-          <div className="time-data__timestamp">{serverDate}</div>
-        </div>
-      )}
+      {Boolean(serverDate) && <TimeComponent timestamp={serverDate} />}
       {isConnected || (
         <div className="time-data__loader">
           <LoadingComponent />
         </div>
       )}
-      <Button
-        onClick={onLogout}
-        type="primary"
-        htmlType="button"
-        className="time-data__logout"
-      >
-        Logout
-      </Button>
+      <Logout />
     </div>
   );
 };
