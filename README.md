@@ -2,5 +2,5 @@
 ###### Tiny App with auth and real-time data 
 ### Tech: 
 ##### 🌍 [create-react-app](https://breakdance.github.io/breakdance/)
-##### 📋 [react-hooks-form](https://react-hook-form.com/)
+##### 📋 [ant design](https://ant.design/)
 ##### 🤞 [typescript](https://www.typescriptlang.org/)
