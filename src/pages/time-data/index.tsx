@@ -8,29 +8,36 @@ import "./index.scss";
 
 const TimeData = () => {
   const token = useToken();
-
+  //@ts-ignore
+  let socket: WebSocket = null;
+  let connectionAb = new AbortController();
   const [wsUrl, setWsUrl] = useState("");
   const [serverDate, setServerDate] = useState<number>(0);
   const [isConnected, setIsConnected] = useState(false);
 
+  /**@description Get connection string  Effect */
   useEffect(() => {
     getConnectionUrl();
-  }, []);
+    return () => connectionAb.abort();
+  }, [isConnected]);
 
   useEffect(() => {
     connect();
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
   }, [wsUrl]);
 
   const getConnectionUrl = useCallback(() => {
     fetch(`${process.env.REACT_APP_API_SERVICE}subscribe`, {
+      signal: connectionAb.signal,
       headers: {
         "x-test-app-jwt-token": token,
       },
     })
-      .then((res) => {
-        console.log(res);
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
         setWsUrl(data.url);
       });
@@ -38,14 +45,18 @@ const TimeData = () => {
 
   const connect = () => {
     if (!wsUrl) return;
-    let socket = new WebSocket(wsUrl);
+    socket = new WebSocket(wsUrl);
     socket.onopen = (e) => {
       setIsConnected(true);
       socket.onmessage = (e: MessageEvent) => {
         console.log(e);
         setServerDate(JSON.parse(e.data)["server_time"]);
       };
-      socket.onclose = () => setIsConnected(false);
+      socket.onclose = () => {
+        setWsUrl("");
+        setServerDate(0);
+        setIsConnected(false)
+      };
     };
   };
 
