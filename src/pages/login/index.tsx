@@ -1,8 +1,7 @@
 //@ts-nocheck
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import { Button, Input } from "antd";
+import { Button, Input, Form, FormItemProps } from "antd";
 import { login } from "../../store/user/";
 import "./index.scss";
 
@@ -12,9 +11,16 @@ type LoginParams = {
 };
 
 const Login = () => {
+  const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const { register, handleSubmit, control } = useForm();
   const [isLoginProcess, setisLoginProcess] = useState(false);
+  const [formItemProps, setFormItemsProps] = useState<FormItemProps>({});
+
+  const onValuesChange = () => {
+    if(Object.keys(formItemProps).length) {
+      setFormItemsProps({});
+    }
+  }
 
   const onLogin = useCallback(({ token }) => dispatch(login({ token })), []);
 
@@ -30,6 +36,12 @@ const Login = () => {
       body: JSON.stringify({ username, password }),
     })
       .then((res) => {
+        if (res.status === 401) {
+          return setFormItemsProps({
+            validateStatus: "error",
+            help: "incorrect username/password",
+          });
+        }
         let token;
         for (const [key, value] of res.headers.entries()) {
           if (key === "x-test-app-jwt-token") {
@@ -45,35 +57,49 @@ const Login = () => {
   };
 
   return (
-    //@ts-ignore
-    <form onSubmit={handleSubmit(onSubmit)} className="login-form">
-      <Controller
-        as={<Input />}
-        type="text"
-        placeholder="username"
+    <Form
+      onValuesChange={onValuesChange}
+      form={form}
+      onFinish={onSubmit}
+    >
+      <Form.Item
+        {...formItemProps}
         name="username"
-        className="login-form__item"
-        control={control}
-        rules={{ required: true }}
-      />
-      <Controller
-        as={<Input.Password />}
-        className="login-form__item"
-        type="password"
-        name="password"
-        placeholder="password"
-        control={control}
-        rules={{ required: true }}
-      />
-      <Button
-        className="login-form__item"
-        loading={isLoginProcess}
-        htmlType="submit"
-        type="primary"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
       >
-        Login
-      </Button>
-    </form>
+        <Input
+          type="text"
+          placeholder="username"
+          name="username"
+          className="login-form__item"
+        />
+      </Form.Item>
+      <Form.Item
+        {...formItemProps}
+        name="password"
+        rules={[
+          {
+            required: true,
+          },
+        ]}
+      >
+        <Input.Password
+          // className="login-form__item"
+          type="password"
+          name="password"
+          placeholder="password"
+        />
+      </Form.Item>
+      <Form.Item>
+        <Button loading={isLoginProcess} htmlType="submit" type="primary">
+          Login
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 
