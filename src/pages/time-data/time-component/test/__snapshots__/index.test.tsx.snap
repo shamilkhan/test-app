@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TimeComponent /> SnapShot 1`] = `
+<div
+  className="time-data__value"
+>
+  <div
+    className="time-data__icon"
+  >
+    🕔
+  </div>
+  <div
+    className="time-data__timestamp"
+  >
+    111111111
+  </div>
+</div>
+`;
+
+exports[`<TimeComponent /> Snapshot 1`] = `
+<div
+  className="time-data__value"
+>
+  <div
+    className="time-data__icon"
+  >
+    🕔
+  </div>
+  <div
+    className="time-data__timestamp"
+  >
+    12312
+  </div>
+</div>
+`;
