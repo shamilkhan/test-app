@@ -75,7 +75,6 @@ const Login = () => {
           type="text"
           placeholder="username"
           name="username"
-          className="login-form__item"
         />
       </Form.Item>
       <Form.Item
@@ -88,7 +87,6 @@ const Login = () => {
         ]}
       >
         <Input.Password
-          // className="login-form__item"
           type="password"
           name="password"
           placeholder="password"
