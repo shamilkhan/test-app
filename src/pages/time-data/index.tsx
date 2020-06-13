@@ -8,9 +8,9 @@ import "./index.scss";
 
 const TimeData = () => {
   const token = useToken();
-  //@ts-ignore
   let connectionAb = new AbortController();
   const [wsUrl, setWsUrl] = useState("");
+  /**@description TimeStamp Value from server */
   const [serverDate, setServerDate] = useState<number>(0);
   const [isConnected, setIsConnected] = useState(false);
 
