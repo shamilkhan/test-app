@@ -64,7 +64,7 @@ const TimeData = () => {
 
   return (
     <div className="time-data">
-      {Boolean(serverDate) && <TimeComponent timestamp={serverDate} />}
+      {Boolean(serverDate) && <TimeComponent isConnected={isConnected} timestamp={serverDate} />}
       {isConnected || (
         <div className="time-data__loader">
           <LoadingComponent />
