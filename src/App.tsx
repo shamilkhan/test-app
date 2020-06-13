@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React from "react";
 import loadable from "@loadable/component";
 import useToken from "./custom-hooks/use-token";
