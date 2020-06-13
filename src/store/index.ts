@@ -1,14 +1,21 @@
-import { configureStore } from "@reduxjs/toolkit";
-import userSlice from "./user";
+import {
+  combineReducers,
+  configureStore,
+  getDefaultMiddleware,
+} from "@reduxjs/toolkit";
+import userSlice, { middleware } from "./user";
 
-export type AppStore = typeof store;
+export type AppStore = ReturnType<typeof rootReducer>
 
 export type AppDispatch = typeof store.dispatch;
 
+const rootReducer = combineReducers({
+  user: userSlice.reducer,
+})
+
 const store = configureStore({
-  reducer: {
-    user: userSlice.reducer,
-  },
+  reducer: rootReducer,
+  middleware: [...getDefaultMiddleware<AppStore>(), middleware] as const,
 });
 
 export default store;
