@@ -10,6 +10,10 @@ describe("<Login/>", () => {
     expect(submitButtom).toBeInTheDocument();
   });
   it("Rendered Inputs", () => {
-    const {getBy} = render(<Login />, { wrapper: Wrapper });
+    const { getByPlaceholderText  } = render(<Login />, { wrapper: Wrapper });
+    const usernameNode = getByPlaceholderText("username");
+    expect(usernameNode).toBeInTheDocument();
+    const passwordNode = getByPlaceholderText("password");
+    expect(passwordNode).toBeInTheDocument();
   });
 });
