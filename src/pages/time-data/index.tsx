@@ -8,27 +8,37 @@ import "./index.scss";
 
 const TimeData = () => {
   const token = useToken();
-  //@ts-ignore
-  let socket: WebSocket = null;
   let connectionAb = new AbortController();
   const [wsUrl, setWsUrl] = useState("");
+  /**@description TimeStamp Value from server */
   const [serverDate, setServerDate] = useState<number>(0);
   const [isConnected, setIsConnected] = useState(false);
 
   /**@description Get connection string  Effect */
   useEffect(() => {
-    getConnectionUrl();
-    return () => connectionAb.abort();
+    if (!isConnected) getConnectionUrl();
   }, [isConnected]);
 
+  /**@description Connect to WS server */
   useEffect(() => {
-    connect();
-    return () => {
-      if (socket) {
-        socket.close();
-      }
+    if (!wsUrl) return;
+    const socket = new WebSocket(wsUrl);
+    socket.onopen = (e) => {
+      setIsConnected(true);
+      socket.onmessage = (e: MessageEvent) => {
+        setServerDate(JSON.parse(e.data)["server_time"]);
+      };
+      socket.onclose = () => {
+        setIsConnected(false);
+      };
     };
+    return () => socket.close();
   }, [wsUrl]);
+
+  /**@description Clear all side-effects on unmount */
+  useEffect(() => {
+    return () => connectionAb.abort();
+  }, []);
 
   const getConnectionUrl = useCallback(() => {
     fetch(`${process.env.REACT_APP_API_SERVICE}subscribe`, {
@@ -40,31 +50,15 @@ const TimeData = () => {
       .then((res) => res.json())
       .then((data) => {
         setWsUrl(data.url);
-      });
+      })
+      .catch((err) => console.log("subscribe error is", err));
   }, []);
-
-  const connect = () => {
-    if (!wsUrl) return;
-    if(socket) {
-      socket.close();
-    }
-    socket = new WebSocket(wsUrl);
-    socket.onopen = (e) => {
-      setIsConnected(true);
-      socket.onmessage = (e: MessageEvent) => {
-        setServerDate(JSON.parse(e.data)["server_time"]);
-      };
-      socket.onclose = () => {
-        setWsUrl("");
-        // setServerDate(0);
-        setIsConnected(false)
-      };
-    };
-  };
 
   return (
     <div className="time-data">
-      {Boolean(serverDate) && <TimeComponent isConnected={isConnected} timestamp={serverDate} />}
+      {Boolean(serverDate) && (
+        <TimeComponent isConnected={isConnected} timestamp={serverDate} />
+      )}
       {isConnected || (
         <div className="time-data__loader">
           <LoadingComponent />
@@ -75,4 +69,4 @@ const TimeData = () => {
   );
 };
 
-export default TimeData;
+export default React.memo(TimeData);
